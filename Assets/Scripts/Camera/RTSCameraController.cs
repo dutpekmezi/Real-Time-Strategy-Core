@@ -32,7 +32,7 @@ namespace Assets.Scripts.Camera
 
         private void Update()
         {
-            keyboardInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
+            keyboardInput = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
             keyboardInput = Vector2.ClampMagnitude(keyboardInput, 1f);
 
             edgeInput = Vector2.zero;
@@ -57,7 +57,7 @@ namespace Assets.Scripts.Camera
             }
 
             edgeInput = Vector2.ClampMagnitude(edgeInput, 1f);
-            zoomInput = Input.mouseScrollDelta.y;
+            zoomInput = Input.GetAxis("Mouse ScrollWheel");
         }
 
         private void LateUpdate()
