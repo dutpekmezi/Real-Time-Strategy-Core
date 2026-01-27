@@ -157,11 +157,6 @@ namespace Utils.Scene
                 return SceneLoadResult.Empty;
             }
 
-            if (config.SceneReference is AssetReferenceScene sceneReference)
-            {
-                return await LoadSceneInstance(sceneKey, sceneReference);
-            }
-
             try
             {
                 var prefab = await config.SceneReference.LoadAssetAsync<GameObject>().Task;
