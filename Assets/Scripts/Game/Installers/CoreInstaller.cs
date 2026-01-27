@@ -60,6 +60,8 @@ namespace Game.Installers
             }
 
             _ = new SceneService(sceneServiceSettings);
+
+            _ = SceneService.Instance.LoadScene(SceneKeys.GameScene);
         }
 
         private void InitializeCurrencyService()

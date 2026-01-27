@@ -33,7 +33,7 @@ namespace Utils.Scene
 
                 if (sceneObject != null)
                 {
-                    _= sceneObject.Clear();
+                    _ = sceneObject.Clear();
                 }
 
                 GameObject.Destroy(scene.Value);
@@ -87,7 +87,7 @@ namespace Utils.Scene
             }
             catch (System.Exception e)
             {
-                GameLogger.Log(e.ToString());
+                GameLogger.Log(e.ToString());   
                 return null;
             }
         }
