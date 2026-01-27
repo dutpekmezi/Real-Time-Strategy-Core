@@ -159,26 +159,26 @@ namespace Utils.Scene
 
             try
             {
-                var prefab = await config.SceneReference.LoadAssetAsync<GameObject>().Task;
-                return SceneLoadResult.FromPrefab(prefab);
-            }
-            catch (System.Exception prefabException)
-            {
-                return await LoadSceneInstance(sceneKey, config.SceneReference, prefabException);
-            }
-        }
-
-        private async Task<SceneLoadResult> LoadSceneInstance(string sceneKey, AssetReference sceneReference, System.Exception prefabException = null)
-        {
-            try
-            {
-                var sceneHandle = sceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
+                var sceneHandle = config.SceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
                 var sceneInstance = await sceneHandle.Task;
                 return SceneLoadResult.FromSceneInstance(sceneInstance);
             }
             catch (System.Exception sceneException)
             {
-                if (prefabException != null)
+                return await LoadScenePrefab(sceneKey, config.SceneReference, sceneException);
+            }
+        }
+
+        private async Task<SceneLoadResult> LoadScenePrefab(string sceneKey, AssetReference sceneReference, System.Exception sceneException = null)
+        {
+            try
+            {
+                var prefab = await sceneReference.LoadAssetAsync<GameObject>().Task;
+                return SceneLoadResult.FromPrefab(prefab);
+            }
+            catch (System.Exception prefabException)
+            {
+                if (sceneException != null)
                 {
                     GameLogger.LogError(
                         $"Failed to load scene resource '{sceneKey}' as prefab or scene. " +
@@ -186,7 +186,7 @@ namespace Utils.Scene
                 }
                 else
                 {
-                    GameLogger.LogError($"Failed to load scene resource '{sceneKey}' as scene. {sceneException.Message}");
+                    GameLogger.LogError($"Failed to load scene resource '{sceneKey}' as prefab. {prefabException.Message}");
                 }
 
                 return SceneLoadResult.Empty;
