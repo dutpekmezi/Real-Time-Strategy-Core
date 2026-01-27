@@ -36,16 +36,6 @@ namespace Game.Installers
             InitializeCurrencyService();
         }
 
-        private async void Start()
-        {
-            if (SceneService.Instance == null)
-            {
-                return;
-            }
-
-            await SceneService.Instance.LoadStartupScenes();
-        }
-
         private static void InitializeSaveService()
         {
             if (SaveService.Instance != null)

@@ -25,40 +25,6 @@ namespace Utils.Scene
             this._settings = settings;
         }
 
-        public async Task LoadStartupScenes()
-        {
-            if (_settings == null || _settings.SceneConfigs == null || _settings.SceneConfigs.Count == 0)
-            {
-                GameLogger.LogWarning("[SceneService] SceneServiceSettings is empty. Startup scenes will not be loaded.");
-                return;
-            }
-
-            var baseSceneIndex = _settings.SceneConfigs.FindIndex(config => config.SceneKey == SceneKeys.InitialScene);
-            if (baseSceneIndex < 0)
-            {
-                GameLogger.LogWarning("[SceneService] Base scene config not found. Startup scenes will not be loaded.");
-                return;
-            }
-
-            var baseSceneConfig = _settings.SceneConfigs[baseSceneIndex];
-            if (!_loadedScenes.ContainsKey(baseSceneConfig.SceneKey))
-            {
-                await LoadScene(baseSceneConfig.SceneKey);
-            }
-
-            var nextSceneIndex = baseSceneIndex + 1;
-            if (nextSceneIndex >= _settings.SceneConfigs.Count)
-            {
-                return;
-            }
-
-            var nextSceneConfig = _settings.SceneConfigs[nextSceneIndex];
-            if (!_loadedScenes.ContainsKey(nextSceneConfig.SceneKey))
-            {
-                await LoadScene(nextSceneConfig.SceneKey);
-            }
-        }
-
         public void Clear()
         {
             foreach (var scene in _loadedScenes)
