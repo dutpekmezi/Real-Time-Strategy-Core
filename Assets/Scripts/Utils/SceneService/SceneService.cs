@@ -157,16 +157,44 @@ namespace Utils.Scene
                 return SceneLoadResult.Empty;
             }
 
+            if (config.SceneReference is AssetReferenceScene sceneReference)
+            {
+                return await LoadSceneInstance(sceneKey, sceneReference);
+            }
+
             try
             {
                 var prefab = await config.SceneReference.LoadAssetAsync<GameObject>().Task;
                 return SceneLoadResult.FromPrefab(prefab);
             }
-            catch (InvalidKeyException)
+            catch (System.Exception prefabException)
             {
-                var sceneHandle = config.SceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
+                return await LoadSceneInstance(sceneKey, config.SceneReference, prefabException);
+            }
+        }
+
+        private async Task<SceneLoadResult> LoadSceneInstance(string sceneKey, AssetReference sceneReference, System.Exception prefabException = null)
+        {
+            try
+            {
+                var sceneHandle = sceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
                 var sceneInstance = await sceneHandle.Task;
                 return SceneLoadResult.FromSceneInstance(sceneInstance);
+            }
+            catch (System.Exception sceneException)
+            {
+                if (prefabException != null)
+                {
+                    GameLogger.LogError(
+                        $"Failed to load scene resource '{sceneKey}' as prefab or scene. " +
+                        $"Prefab error: {prefabException.Message}. Scene error: {sceneException.Message}");
+                }
+                else
+                {
+                    GameLogger.LogError($"Failed to load scene resource '{sceneKey}' as scene. {sceneException.Message}");
+                }
+
+                return SceneLoadResult.Empty;
             }
         }
 
