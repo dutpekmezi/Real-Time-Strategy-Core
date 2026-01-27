@@ -1,6 +1,9 @@
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using UnityEngine.AddressableAssets;
+using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
 using Utils.Logger;
 using Utils.Signal;
 
@@ -9,6 +12,7 @@ namespace Utils.Scene
     public class SceneService : ISceneService
     {
         private Dictionary<string, GameObject> _loadedScenes = new Dictionary<string, GameObject>();
+        private Dictionary<string, SceneInstance> _loadedSceneInstances = new Dictionary<string, SceneInstance>();
         private SceneServiceSettings _settings;
 
         public Dictionary<string, GameObject> LoadedScenes => _loadedScenes;
@@ -47,6 +51,13 @@ namespace Utils.Scene
             }
 
             _loadedScenes.Clear();
+
+            foreach (var sceneInstance in _loadedSceneInstances)
+            {
+                _ = Addressables.UnloadSceneAsync(sceneInstance.Value);
+            }
+
+            _loadedSceneInstances.Clear();
         }
 
         public async Task<GameObject> LoadScene(string sceneKey)
@@ -62,17 +73,24 @@ namespace Utils.Scene
                     Clear();
                 }
 
-                // Find prefab
-                var sceneGameobject = await LoadSceneResource(sceneKey);
+                // Find prefab or load scene
+                var loadResult = await LoadSceneResource(sceneKey);
 
-                if (sceneGameobject == null)
+                if (!loadResult.HasSceneInstance && loadResult.ScenePrefab == null)
                 {
-                    GameLogger.LogError($"Scene '{sceneGameobject.name}' not found!");
+                    GameLogger.LogError($"Scene '{sceneKey}' not found!");
                     return null;
                 }
 
-                // Instantiate
-                var currentScene = GameObject.Instantiate(sceneGameobject);
+                if (loadResult.HasSceneInstance)
+                {
+                    _loadedSceneInstances[sceneKey] = loadResult.SceneInstance;
+                    SignalBus.Get<OnSceneTransitionEnded>().Invoke(config);
+                    return null;
+                }
+
+                // Instantiate prefab
+                var currentScene = GameObject.Instantiate(loadResult.ScenePrefab);
                 _loadedScenes.Add(sceneKey, currentScene);
 
                 ISceneObject sceneObject = currentScene.GetComponent<ISceneObject>();
@@ -96,6 +114,13 @@ namespace Utils.Scene
         {
             try
             {
+                if (_loadedSceneInstances.TryGetValue(scene, out var sceneInstance))
+                {
+                    await Addressables.UnloadSceneAsync(sceneInstance).Task;
+                    _loadedSceneInstances.Remove(scene);
+                    return;
+                }
+
                 if (_loadedScenes.TryGetValue(scene, out var sceneGO))
                 {
                     ISceneObject sceneObject = sceneGO.GetComponent<ISceneObject>();
@@ -123,17 +148,51 @@ namespace Utils.Scene
             }
         }
 
-        private async Task<GameObject> LoadSceneResource(string sceneKey)
+        private async Task<SceneLoadResult> LoadSceneResource(string sceneKey)
         {
             var config = _settings.GetSceneConfig(sceneKey);
 
-            if (config != null)
+            if (config == null)
             {
-                return await config.SceneReference.LoadAssetAsync<GameObject>().Task;
+                return SceneLoadResult.Empty;
             }
-            else
+
+            try
             {
-                return null;
+                var prefab = await config.SceneReference.LoadAssetAsync<GameObject>().Task;
+                return SceneLoadResult.FromPrefab(prefab);
+            }
+            catch (InvalidKeyException)
+            {
+                var sceneHandle = config.SceneReference.LoadSceneAsync(LoadSceneMode.Additive, true);
+                var sceneInstance = await sceneHandle.Task;
+                return SceneLoadResult.FromSceneInstance(sceneInstance);
+            }
+        }
+
+        private readonly struct SceneLoadResult
+        {
+            public GameObject ScenePrefab { get; }
+            public SceneInstance SceneInstance { get; }
+            public bool HasSceneInstance { get; }
+
+            private SceneLoadResult(GameObject scenePrefab, SceneInstance sceneInstance, bool hasSceneInstance)
+            {
+                ScenePrefab = scenePrefab;
+                SceneInstance = sceneInstance;
+                HasSceneInstance = hasSceneInstance;
+            }
+
+            public static SceneLoadResult Empty => new SceneLoadResult(null, default, false);
+
+            public static SceneLoadResult FromPrefab(GameObject prefab)
+            {
+                return new SceneLoadResult(prefab, default, false);
+            }
+
+            public static SceneLoadResult FromSceneInstance(SceneInstance sceneInstance)
+            {
+                return new SceneLoadResult(null, sceneInstance, true);
             }
         }
     }
