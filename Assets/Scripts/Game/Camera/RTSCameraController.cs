@@ -64,12 +64,25 @@ namespace Assets.Scripts.Camera
         {
             Vector3 position = transform.position;
 
-            Vector3 keyboardMove = new Vector3(keyboardInput.x, 0f, keyboardInput.y) * panSpeed * Time.deltaTime;
-            Vector3 edgeMove = new Vector3(edgeInput.x, 0f, edgeInput.y) * edgePanSpeed * Time.deltaTime;
-            position += keyboardMove + edgeMove;
+            Vector2 input = keyboardInput * panSpeed + edgeInput * edgePanSpeed;
+
+            Transform refT = cachedCamera != null ? cachedCamera.transform : transform;
+
+            Vector3 forward = refT.forward;
+            Vector3 right = refT.right;
+
+            forward.y = 0f;
+            right.y = 0f;
+
+            forward.Normalize();
+            right.Normalize();
+
+            Vector3 move = (right * input.x + forward * input.y) * Time.deltaTime;
+            position += move;
 
             position.x = Mathf.Clamp(position.x, boundsX.x, boundsX.y);
             position.z = Mathf.Clamp(position.z, boundsZ.x, boundsZ.y);
+
             transform.position = position;
 
             if (Mathf.Abs(zoomInput) > 0.01f)
@@ -77,6 +90,7 @@ namespace Assets.Scripts.Camera
                 ApplyZoom(zoomInput * zoomSpeed * Time.deltaTime);
             }
         }
+
 
         private void ApplyZoom(float delta)
         {
