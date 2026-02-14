@@ -40,8 +40,6 @@ namespace Assets.Scripts.Camera
             Vector3 move = new Vector3(input.x, input.y, 0f) * Time.deltaTime;
             position += move;
 
-            position.x = Mathf.Clamp(position.x, boundsX.x, boundsX.y);
-            position.y = Mathf.Clamp(position.y, boundsY.x, boundsY.y);
 
             transform.position = position;
 
