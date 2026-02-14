@@ -36,6 +36,25 @@ namespace Game.Simulation
         Trade
     }
 
+    public enum DiplomaticStance
+    {
+        Neutral,
+        Peace,
+        Ceasefire,
+        War
+    }
+
+    public enum SimulationCommandType
+    {
+        DeclareWar,
+        OfferPeace,
+        OfferCeasefire,
+        BreakCeasefire,
+        AttackCity,
+        SignAgreement,
+        BreakAgreement
+    }
+
     public enum TrustTitle
     {
         Neutral,
@@ -65,6 +84,7 @@ namespace Game.Simulation
     {
         public string CityId;
         public string Name;
+        public string OwnerPlayerId;
         public TerrainType Terrain;
 
         public int Population = 1000;
@@ -136,5 +156,38 @@ namespace Game.Simulation
                 TrustTitle = TrustTitle.Loyal;
             }
         }
+    }
+
+    [Serializable]
+    public class PlayerProfile
+    {
+        public string PlayerId;
+        public string DisplayName;
+        public bool IsHuman;
+    }
+
+    [Serializable]
+    public class DiplomacyRelation
+    {
+        public string SourcePlayerId;
+        public string TargetPlayerId;
+        public DiplomaticStance Stance;
+        public int LastUpdatedTurn;
+    }
+
+    [Serializable]
+    public class SimulationCommand
+    {
+        public SimulationCommandType Type;
+        public string SourcePlayerId;
+        public string TargetPlayerId;
+        public string CityId;
+        public AgreementType AgreementType;
+        public float AttackIntensity;
+    }
+
+    public interface IPlayerAgent
+    {
+        void EnqueueTurnCommands(WorldSimulationService simulation, string playerId, List<SimulationCommand> output);
     }
 }

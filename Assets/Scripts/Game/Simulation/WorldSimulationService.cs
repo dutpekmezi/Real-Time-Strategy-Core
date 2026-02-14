@@ -7,20 +7,29 @@ namespace Game.Simulation
 {
     public class WorldSimulationService : IInitializable
     {
+        private const int MaxPlayerCount = 4;
+
         private readonly Dictionary<TerrainType, TerrainProfile> _terrainProfiles = new();
         private readonly List<CityState> _cities = new();
         private readonly List<StrategicLocation> _strategicLocations = new();
         private readonly Dictionary<string, PlayerDiplomacyState> _diplomacyByPlayer = new();
+        private readonly Dictionary<string, PlayerProfile> _players = new();
+        private readonly Dictionary<string, IPlayerAgent> _agentsByPlayer = new();
+        private readonly Dictionary<string, DiplomacyRelation> _diplomacyRelations = new();
+        private readonly List<SimulationCommand> _commandBuffer = new();
 
         private int _turn;
         private WeeklyActionType _currentAction;
 
         public WeeklyActionType CurrentAction => _currentAction;
 
+        public IReadOnlyCollection<PlayerProfile> Players => _players.Values;
+
         public void Initialize()
         {
             SeedTerrainProfiles();
             SeedPrototypeWorld();
+            SeedPrototypePlayers();
             _turn = 0;
             _currentAction = ResolveWeeklyAction(_turn);
         }
@@ -37,6 +46,54 @@ namespace Game.Simulation
                 {
                     _cities[i].RegisterRebellion();
                 }
+            }
+
+            ProcessAiTurns();
+        }
+
+        public bool TryRegisterPlayer(string playerId, string displayName, bool isHuman, IPlayerAgent agent = null)
+        {
+            if (string.IsNullOrWhiteSpace(playerId) || _players.ContainsKey(playerId) || _players.Count >= MaxPlayerCount)
+            {
+                return false;
+            }
+
+            _players[playerId] = new PlayerProfile
+            {
+                PlayerId = playerId,
+                DisplayName = string.IsNullOrWhiteSpace(displayName) ? playerId : displayName,
+                IsHuman = isHuman
+            };
+
+            if (!isHuman && agent != null)
+            {
+                _agentsByPlayer[playerId] = agent;
+            }
+
+            InitializeDiplomacyRelationsFor(playerId);
+            AssignFreeCityTo(playerId);
+            return true;
+        }
+
+        public void SetupPrototypeMultiplayerSession(int humanPlayerCount = 1, int botPlayerCount = 3)
+        {
+            _players.Clear();
+            _agentsByPlayer.Clear();
+            _diplomacyRelations.Clear();
+
+            int clampedHumanPlayers = Mathf.Clamp(humanPlayerCount, 1, MaxPlayerCount);
+            int clampedBotPlayers = Mathf.Clamp(botPlayerCount, 0, MaxPlayerCount - clampedHumanPlayers);
+
+            for (int i = 0; i < clampedHumanPlayers; i++)
+            {
+                string id = $"player-human-{i + 1}";
+                TryRegisterPlayer(id, $"Human {i + 1}", true);
+            }
+
+            for (int i = 0; i < clampedBotPlayers; i++)
+            {
+                string id = $"player-bot-{i + 1}";
+                TryRegisterPlayer(id, $"Bot {i + 1}", false, new SimpleRuleBasedBotAgent());
             }
         }
 
@@ -55,6 +112,28 @@ namespace Game.Simulation
 
             city.RegisterBattle(Mathf.Max(0f, intensity));
             return true;
+        }
+
+        public bool TryApplyBattle(string sourcePlayerId, string cityId, float intensity)
+        {
+            CityState city = _cities.Find(x => x.CityId == cityId);
+            if (city == null)
+            {
+                return false;
+            }
+
+            if (!CanAttack(sourcePlayerId, city.OwnerPlayerId))
+            {
+                return false;
+            }
+
+            bool attackApplied = TryApplyBattle(cityId, intensity);
+            if (attackApplied)
+            {
+                city.HistoryLog.Add($"{sourcePlayerId} attacked with intensity {intensity:0.0}");
+            }
+
+            return attackApplied;
         }
 
         public bool TrySignAgreement(string sourcePlayerId, string targetPlayerId, AgreementType type)
@@ -93,6 +172,62 @@ namespace Game.Simulation
             agreement.IsBroken = true;
             source.MarkBreach();
             return true;
+        }
+
+        public bool TrySetDiplomaticStance(string sourcePlayerId, string targetPlayerId, DiplomaticStance stance)
+        {
+            if (!_players.ContainsKey(sourcePlayerId) || !_players.ContainsKey(targetPlayerId) || sourcePlayerId == targetPlayerId)
+            {
+                return false;
+            }
+
+            DiplomacyRelation relation = GetOrCreateRelation(sourcePlayerId, targetPlayerId);
+            relation.Stance = stance;
+            relation.LastUpdatedTurn = _turn;
+
+            DiplomacyRelation mirrored = GetOrCreateRelation(targetPlayerId, sourcePlayerId);
+            mirrored.Stance = stance;
+            mirrored.LastUpdatedTurn = _turn;
+            return true;
+        }
+
+        public bool CanAttack(string sourcePlayerId, string targetPlayerId)
+        {
+            if (string.IsNullOrWhiteSpace(sourcePlayerId) || string.IsNullOrWhiteSpace(targetPlayerId) || sourcePlayerId == targetPlayerId)
+            {
+                return false;
+            }
+
+            DiplomacyRelation relation = GetOrCreateRelation(sourcePlayerId, targetPlayerId);
+            return relation.Stance == DiplomaticStance.War;
+        }
+
+        public bool ExecuteCommand(SimulationCommand command)
+        {
+            if (command == null)
+            {
+                return false;
+            }
+
+            switch (command.Type)
+            {
+                case SimulationCommandType.DeclareWar:
+                    return TrySetDiplomaticStance(command.SourcePlayerId, command.TargetPlayerId, DiplomaticStance.War);
+                case SimulationCommandType.OfferPeace:
+                    return TrySetDiplomaticStance(command.SourcePlayerId, command.TargetPlayerId, DiplomaticStance.Peace);
+                case SimulationCommandType.OfferCeasefire:
+                    return TrySetDiplomaticStance(command.SourcePlayerId, command.TargetPlayerId, DiplomaticStance.Ceasefire);
+                case SimulationCommandType.BreakCeasefire:
+                    return TrySetDiplomaticStance(command.SourcePlayerId, command.TargetPlayerId, DiplomaticStance.War);
+                case SimulationCommandType.AttackCity:
+                    return TryApplyBattle(command.SourcePlayerId, command.CityId, command.AttackIntensity);
+                case SimulationCommandType.SignAgreement:
+                    return TrySignAgreement(command.SourcePlayerId, command.TargetPlayerId, command.AgreementType);
+                case SimulationCommandType.BreakAgreement:
+                    return TryBreakAgreement(command.SourcePlayerId, command.TargetPlayerId, command.AgreementType);
+                default:
+                    return false;
+            }
         }
 
         public int CalculateTransitTaxIncome(string locationId, int unitCount)
@@ -163,6 +298,21 @@ namespace Game.Simulation
             return WeeklyActionType.War;
         }
 
+        private void ProcessAiTurns()
+        {
+            _commandBuffer.Clear();
+
+            foreach (KeyValuePair<string, IPlayerAgent> pair in _agentsByPlayer)
+            {
+                pair.Value.EnqueueTurnCommands(this, pair.Key, _commandBuffer);
+            }
+
+            for (int i = 0; i < _commandBuffer.Count; i++)
+            {
+                ExecuteCommand(_commandBuffer[i]);
+            }
+        }
+
         private PlayerDiplomacyState GetOrCreateDiplomacyState(string playerId)
         {
             if (_diplomacyByPlayer.TryGetValue(playerId, out PlayerDiplomacyState state))
@@ -210,6 +360,7 @@ namespace Game.Simulation
             {
                 CityId = "city-karadag",
                 Name = "Karadag",
+                OwnerPlayerId = "player-human-1",
                 Terrain = TerrainType.Mountain
             };
             mountainCity.Deposits.Add(new ResourceDeposit { Resource = ResourceType.Iron, Richness = 0.9f, IsDiscovered = false });
@@ -219,6 +370,7 @@ namespace Game.Simulation
             {
                 CityId = "city-ovakent",
                 Name = "Ovakent",
+                OwnerPlayerId = "player-bot-1",
                 Terrain = TerrainType.Plains
             };
             plainsCity.Deposits.Add(new ResourceDeposit { Resource = ResourceType.Grain, Richness = 0.95f, IsDiscovered = false });
@@ -236,12 +388,92 @@ namespace Game.Simulation
             });
         }
 
+        private void SeedPrototypePlayers()
+        {
+            SetupPrototypeMultiplayerSession();
+            TrySetDiplomaticStance("player-human-1", "player-bot-1", DiplomaticStance.Peace);
+        }
+
+        private void InitializeDiplomacyRelationsFor(string playerId)
+        {
+            foreach (PlayerProfile profile in _players.Values)
+            {
+                if (profile.PlayerId == playerId)
+                {
+                    continue;
+                }
+
+                GetOrCreateRelation(playerId, profile.PlayerId);
+                GetOrCreateRelation(profile.PlayerId, playerId);
+            }
+        }
+
+        private DiplomacyRelation GetOrCreateRelation(string sourcePlayerId, string targetPlayerId)
+        {
+            string key = $"{sourcePlayerId}->{targetPlayerId}";
+            if (_diplomacyRelations.TryGetValue(key, out DiplomacyRelation relation))
+            {
+                return relation;
+            }
+
+            relation = new DiplomacyRelation
+            {
+                SourcePlayerId = sourcePlayerId,
+                TargetPlayerId = targetPlayerId,
+                Stance = DiplomaticStance.Neutral,
+                LastUpdatedTurn = _turn
+            };
+
+            _diplomacyRelations[key] = relation;
+            return relation;
+        }
+
+        private void AssignFreeCityTo(string playerId)
+        {
+            CityState city = _cities.Find(x => string.IsNullOrWhiteSpace(x.OwnerPlayerId));
+            if (city != null)
+            {
+                city.OwnerPlayerId = playerId;
+            }
+        }
+
         public void Dispose()
         {
             _terrainProfiles.Clear();
             _cities.Clear();
             _strategicLocations.Clear();
             _diplomacyByPlayer.Clear();
+            _players.Clear();
+            _agentsByPlayer.Clear();
+            _diplomacyRelations.Clear();
+            _commandBuffer.Clear();
+        }
+    }
+
+    public class SimpleRuleBasedBotAgent : IPlayerAgent
+    {
+        public void EnqueueTurnCommands(WorldSimulationService simulation, string playerId, List<SimulationCommand> output)
+        {
+            if (simulation.CurrentAction == WeeklyActionType.Diplomacy)
+            {
+                output.Add(new SimulationCommand
+                {
+                    Type = UnityEngine.Random.value > 0.5f ? SimulationCommandType.OfferCeasefire : SimulationCommandType.DeclareWar,
+                    SourcePlayerId = playerId,
+                    TargetPlayerId = "player-human-1"
+                });
+            }
+
+            if (simulation.CurrentAction == WeeklyActionType.War)
+            {
+                output.Add(new SimulationCommand
+                {
+                    Type = SimulationCommandType.AttackCity,
+                    SourcePlayerId = playerId,
+                    CityId = "city-karadag",
+                    AttackIntensity = UnityEngine.Random.Range(0.4f, 1.2f)
+                });
+            }
         }
     }
 }
