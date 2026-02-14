@@ -4,6 +4,8 @@ namespace Assets.Scripts.Camera
 {
     public class RTSCameraController : MonoBehaviour
     {
+        [SerializeField] private UnityEngine.Camera camera;
+
         [Header("Pan")]
         [SerializeField] private float panSpeed = 12f;
         [SerializeField] private Vector2 boundsX = new Vector2(-50f, 50f);
@@ -16,15 +18,9 @@ namespace Assets.Scripts.Camera
 
         private Vector2 keyboardInput;
         private float zoomInput;
-        private UnityEngine.Camera cachedCamera;
 
         private void Awake()
         {
-            cachedCamera = GetComponentInChildren<UnityEngine.Camera>();
-            if (cachedCamera == null)
-            {
-                cachedCamera = UnityEngine.Camera.main;
-            }
         }
 
         private void Update()
@@ -57,22 +53,22 @@ namespace Assets.Scripts.Camera
 
         private void ApplyZoom(float delta)
         {
-            if (cachedCamera == null)
+            if (camera == null)
             {
                 return;
             }
 
-            if (cachedCamera.orthographic)
+            if (camera.orthographic)
             {
-                cachedCamera.orthographicSize = Mathf.Clamp(
-                    cachedCamera.orthographicSize - delta,
+                camera.orthographicSize = Mathf.Clamp(
+                    camera.orthographicSize - delta,
                     minZoom,
                     maxZoom
                 );
                 return;
             }
 
-            Transform cameraTransform = cachedCamera.transform;
+            Transform cameraTransform = camera.transform;
             Vector3 cameraPosition = cameraTransform.position;
             cameraPosition.z = Mathf.Clamp(cameraPosition.z + (-delta), -maxZoom, -minZoom);
             cameraTransform.position = cameraPosition;
