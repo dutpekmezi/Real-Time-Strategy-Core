@@ -414,11 +414,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b7bb514deff6d1e40b1eabd6dc839cd7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  panSpeed: 20
-  edgePanSpeed: 18
-  edgeBorderSize: 12
+  panSpeed: 1000
   boundsX: {x: -50, y: 50}
-  boundsZ: {x: -50, y: 50}
+  boundsY: {x: -50, y: 50}
   zoomSpeed: 1000
   minZoom: 10
   maxZoom: 50
