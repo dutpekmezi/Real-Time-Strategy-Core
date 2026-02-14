@@ -24,6 +24,9 @@ namespace Game.Installers
         private LogicTimer _logicTimer;
         private WorldSimulationService _worldSimulationService;
 
+        [SerializeField, Range(1, 4)] private int humanPlayerCount = 1;
+        [SerializeField, Range(0, 3)] private int botPlayerCount = 3;
+
         public Task Initialize()
         {
             if (_initialized)
@@ -34,6 +37,7 @@ namespace Game.Installers
 
             _logicTimer = BindDisposable(new LogicTimer(OnLogicTick));
             _worldSimulationService = InitializeInitializable(new WorldSimulationService());
+            _worldSimulationService.SetupPrototypeMultiplayerSession(humanPlayerCount, botPlayerCount);
             _logicTimer.Start();
 
 #if UNITY_EDITOR
