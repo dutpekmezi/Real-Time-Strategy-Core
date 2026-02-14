@@ -6220,7 +6220,7 @@ Camera:
   m_GameObject: {fileID: 963194225}
   m_Enabled: 1
   serializedVersion: 2
-  m_ClearFlags: 1
+  m_ClearFlags: 2
   m_BackGroundColor: {r: 1, g: 1, b: 1, a: 1}
   m_projectionMatrixMode: 1
   m_GateFitMode: 2
@@ -6244,7 +6244,7 @@ Camera:
     height: 1
   near clip plane: 1
   far clip plane: 10000
-  field of view: 26
+  field of view: 15
   orthographic: 0
   orthographic size: 2000
   m_Depth: -1
@@ -6270,13 +6270,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 963194225}
   serializedVersion: 2
-  m_LocalRotation: {x: -0.21561591, y: 0.08508985, z: 0.018863956, w: 0.97258097}
-  m_LocalPosition: {x: 2689, y: 4000, z: -1650}
+  m_LocalRotation: {x: -0.17298746, y: 0.085831694, z: 0.015134449, w: 0.98106027}
+  m_LocalPosition: {x: 1751, y: 2034, z: -6968}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: -25, y: 10, z: 0}
+  m_LocalEulerAnglesHint: {x: -20, y: 10, z: 0}
 --- !u!114 &963194229
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6293,9 +6293,9 @@ MonoBehaviour:
   panSpeed: 1000
   boundsX: {x: -50, y: 50}
   boundsY: {x: -50, y: 50}
-  zoomSpeed: 1000
-  minZoom: 10
-  maxZoom: 5000
+  zoomSpeed: 10
+  minZoom: 5
+  maxZoom: 15
 --- !u!1 &980476058
 GameObject:
   m_ObjectHideFlags: 0
@@ -32677,7 +32677,7 @@ MeshRenderer:
   m_Enabled: 1
   m_CastShadows: 1
   m_ReceiveShadows: 1
-  m_DynamicOccludee: 1
+  m_DynamicOccludee: 0
   m_StaticShadowCaster: 0
   m_MotionVectors: 1
   m_LightProbeUsage: 1
