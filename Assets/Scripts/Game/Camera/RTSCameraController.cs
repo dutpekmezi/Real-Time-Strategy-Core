@@ -66,10 +66,11 @@ namespace Assets.Scripts.Camera
                 return;
             }
 
-            Transform cameraTransform = camera.transform;
-            Vector3 cameraPosition = cameraTransform.position;
-            cameraPosition.z = Mathf.Clamp(cameraPosition.z + (-delta), -maxZoom, -minZoom);
-            cameraTransform.position = cameraPosition;
+            camera.fieldOfView = Mathf.Clamp(
+                camera.fieldOfView - delta,
+                minZoom,
+                maxZoom
+            );
         }
     }
 }
