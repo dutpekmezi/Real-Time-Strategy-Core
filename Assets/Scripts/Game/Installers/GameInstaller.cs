@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using Game.Simulation;
 using Utils.LogicTimer;
 using Utils.Scene;
 
@@ -21,6 +22,7 @@ namespace Game.Installers
         private readonly List<IInitializable> _initializables = new();
 
         private LogicTimer _logicTimer;
+        private WorldSimulationService _worldSimulationService;
 
         public Task Initialize()
         {
@@ -31,6 +33,7 @@ namespace Game.Installers
 
 
             _logicTimer = BindDisposable(new LogicTimer(OnLogicTick));
+            _worldSimulationService = InitializeInitializable(new WorldSimulationService());
             _logicTimer.Start();
 
 #if UNITY_EDITOR
@@ -64,7 +67,7 @@ namespace Game.Installers
 
         private void OnLogicTick()
         {
-  
+            _worldSimulationService?.Tick();
         }
 
         private T BindDisposable<T>(T obj)
