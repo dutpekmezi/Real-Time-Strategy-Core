@@ -85,7 +85,7 @@ namespace Game.Simulation
         public string CityId;
         public string Name;
         public string OwnerPlayerId;
-        public TerrainProfile TerrainProfile;
+        public TerrainType Terrain;
 
         public int Population = 1000;
         public float PublicOrder = 100f;
