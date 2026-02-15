@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text.RegularExpressions;
 using UnityEngine;
 
 namespace Game.Systems
@@ -12,10 +11,8 @@ namespace Game.Systems
         [SerializeField] private float outlineScale = 1.01f;
 
         private readonly Dictionary<Renderer, GameObject> _outlineByRenderer = new();
-        private readonly Dictionary<Renderer, Renderer> _selectionTargetByHitRenderer = new();
-        private Renderer _selectedRenderer;
-
-        private static readonly Regex TrailingIndexRegex = new(@"[_\s]*\d+$", RegexOptions.Compiled);
+        private readonly Dictionary<Renderer, List<Renderer>> _selectionGroupByHitRenderer = new();
+        private readonly List<GameObject> _activeOutlines = new();
 
         protected virtual void Awake()
         {
@@ -51,31 +48,35 @@ namespace Game.Systems
                 return;
             }
 
-            if (_selectionTargetByHitRenderer.TryGetValue(renderer, out Renderer selectionTarget))
+            if (_selectionGroupByHitRenderer.TryGetValue(renderer, out List<Renderer> selectionGroup))
             {
-                SelectCity(selectionTarget);
+                SelectCity(selectionGroup);
             }
         }
 
-        private void SelectCity(Renderer renderer)
+        private void SelectCity(List<Renderer> renderers)
         {
-            if (_selectedRenderer != null && _outlineByRenderer.TryGetValue(_selectedRenderer, out GameObject previousOutline))
+            for (int i = 0; i < _activeOutlines.Count; i++)
             {
-                previousOutline.SetActive(false);
+                _activeOutlines[i].SetActive(false);
             }
 
-            _selectedRenderer = renderer;
+            _activeOutlines.Clear();
 
-            if (_outlineByRenderer.TryGetValue(renderer, out GameObject currentOutline))
+            for (int i = 0; i < renderers.Count; i++)
             {
-                currentOutline.SetActive(true);
+                if (_outlineByRenderer.TryGetValue(renderers[i], out GameObject currentOutline))
+                {
+                    currentOutline.SetActive(true);
+                    _activeOutlines.Add(currentOutline);
+                }
             }
         }
 
         private void EnsureCollidersAndOutlines()
         {
             Renderer[] renderers = cityRoot.GetComponentsInChildren<Renderer>(true);
-            Dictionary<string, List<Renderer>> rendererGroups = new();
+            Dictionary<Transform, List<Renderer>> rendererGroups = new();
 
             for (int i = 0; i < renderers.Length; i++)
             {
@@ -92,11 +93,11 @@ namespace Game.Systems
                     collider.sharedMesh = meshFilter.sharedMesh;
                 }
 
-                string cityKey = BuildCityKey(renderers[i].name);
-                if (!rendererGroups.TryGetValue(cityKey, out List<Renderer> cityRenderers))
+                Transform groupRoot = GetGroupRoot(renderers[i].transform);
+                if (!rendererGroups.TryGetValue(groupRoot, out List<Renderer> cityRenderers))
                 {
                     cityRenderers = new List<Renderer>();
-                    rendererGroups[cityKey] = cityRenderers;
+                    rendererGroups[groupRoot] = cityRenderers;
                 }
 
                 cityRenderers.Add(renderers[i]);
@@ -104,48 +105,35 @@ namespace Game.Systems
 
             foreach (List<Renderer> cityRenderers in rendererGroups.Values)
             {
-                Renderer borderRenderer = FindBorderRenderer(cityRenderers);
-                if (borderRenderer == null)
+                for (int i = 0; i < cityRenderers.Count; i++)
                 {
-                    continue;
-                }
+                    MeshFilter meshFilter = cityRenderers[i].GetComponent<MeshFilter>();
+                    if (meshFilter == null || meshFilter.sharedMesh == null)
+                    {
+                        continue;
+                    }
 
-                MeshFilter borderMeshFilter = borderRenderer.GetComponent<MeshFilter>();
-                if (borderMeshFilter == null || borderMeshFilter.sharedMesh == null)
-                {
-                    continue;
+                    GameObject outline = BuildOutlineObject(cityRenderers[i], meshFilter.sharedMesh);
+                    _outlineByRenderer[cityRenderers[i]] = outline;
                 }
-
-                GameObject outline = BuildOutlineObject(borderRenderer, borderMeshFilter.sharedMesh);
-                _outlineByRenderer[borderRenderer] = outline;
 
                 for (int i = 0; i < cityRenderers.Count; i++)
                 {
-                    _selectionTargetByHitRenderer[cityRenderers[i]] = borderRenderer;
+                    _selectionGroupByHitRenderer[cityRenderers[i]] = cityRenderers;
                 }
             }
         }
 
-        private static Renderer FindBorderRenderer(List<Renderer> cityRenderers)
+        private Transform GetGroupRoot(Transform current)
         {
-            for (int i = 0; i < cityRenderers.Count; i++)
+            Transform last = current;
+            while (current != null && current != cityRoot)
             {
-                string lowerName = cityRenderers[i].name.ToLowerInvariant();
-                if (lowerName.Contains("border") || lowerName.Contains("layer"))
-                {
-                    return cityRenderers[i];
-                }
+                last = current;
+                current = current.parent;
             }
 
-            return cityRenderers.Count > 0 ? cityRenderers[0] : null;
-        }
-
-        private static string BuildCityKey(string name)
-        {
-            string normalized = name.ToLowerInvariant().Replace('"', ' ').Trim();
-            normalized = normalized.Replace("layer", string.Empty).Replace("border", string.Empty);
-            normalized = TrailingIndexRegex.Replace(normalized, string.Empty);
-            return normalized.Trim(' ', '_', '-');
+            return last;
         }
 
         private GameObject BuildOutlineObject(Renderer targetRenderer, Mesh mesh)
