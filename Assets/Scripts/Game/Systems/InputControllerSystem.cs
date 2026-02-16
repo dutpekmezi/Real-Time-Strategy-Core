@@ -9,7 +9,7 @@ namespace Game.Systems
         [SerializeField] private Transform cityRoot;
         [SerializeField] private Material whiteBorderMaterial;
         [SerializeField] private float outlineScale = 1.01f;
-        [SerializeField] private SelectionDetailsCanvas selectionDetailsCanvas;
+        [SerializeField] private SelectionDetailsPanel selectionDetailsCanvas;
 
         private readonly Dictionary<Renderer, GameObject> _outlineByRenderer = new();
         private readonly Dictionary<Renderer, List<Renderer>> _selectionGroupByHitRenderer = new();

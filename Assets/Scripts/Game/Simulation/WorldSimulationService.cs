@@ -104,7 +104,7 @@ namespace Game.Simulation
                 return false;
             }
 
-            CityState city = _cities.Find(x => x.CityId == cityId);
+            CityState city = _cities.Find(x => x.CityData.Id == cityId);
             if (city == null)
             {
                 return false;
@@ -116,7 +116,7 @@ namespace Game.Simulation
 
         public bool TryApplyBattle(string sourcePlayerId, string cityId, float intensity)
         {
-            CityState city = _cities.Find(x => x.CityId == cityId);
+            CityState city = _cities.Find(x => x.CityData.Id == cityId);
             if (city == null)
             {
                 return false;
@@ -243,7 +243,7 @@ namespace Game.Simulation
 
         public void DispatchAnalyst(string cityId, int maxDiscoveryCount = 1)
         {
-            CityState city = _cities.Find(x => x.CityId == cityId);
+            CityState city = _cities.Find(x => x.CityData.Id == cityId);
             if (city == null)
             {
                 return;
@@ -352,7 +352,7 @@ namespace Game.Simulation
         }
 
         private void SeedPrototypeWorld()
-        {
+        {/*
             _cities.Clear();
             _strategicLocations.Clear();
 
@@ -368,7 +368,7 @@ namespace Game.Simulation
 
             CityState plainsCity = new CityState
             {
-                CityId = "city-ovakent",
+                CityData.Id = "city-ovakent",
                 Name = "Ovakent",
                 OwnerPlayerId = "player-bot-1",
                 Terrain = TerrainType.Plains
@@ -385,13 +385,13 @@ namespace Game.Simulation
                 Name = "Northpass Bridge",
                 IsBridgeCrossing = true,
                 TransitTax = 6
-            });
+            });*/
         }
 
         private void SeedPrototypePlayers()
-        {
+        {/*
             SetupPrototypeMultiplayerSession();
-            TrySetDiplomaticStance("player-human-1", "player-bot-1", DiplomaticStance.Peace);
+            TrySetDiplomaticStance("player-human-1", "player-bot-1", DiplomaticStance.Peace);*/
         }
 
         private void InitializeDiplomacyRelationsFor(string playerId)

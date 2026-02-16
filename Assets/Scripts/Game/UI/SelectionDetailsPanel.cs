@@ -1,9 +1,11 @@
 using UnityEngine;
 using UnityEngine.UI;
+using TMPro;
 
-public class SelectionDetailsCanvas : MonoBehaviour
+public class SelectionDetailsPanel : MonoBehaviour
 {
-    [SerializeField] private Text detailsText;
+    [SerializeField] private TextMeshProUGUI titleText;
+    [SerializeField] private TextMeshProUGUI detailsText;
     [SerializeField] private string emptyStateText = "Bir şehir seçin";
 
     private void Awake()

@@ -1,3 +1,4 @@
+using Game.Entity;
 using System;
 using System.Collections.Generic;
 
@@ -82,8 +83,7 @@ namespace Game.Simulation
     [Serializable]
     public class CityState
     {
-        public string CityId;
-        public string Name;
+        public MapEntityData CityData;
         public string OwnerPlayerId;
         public TerrainType Terrain;
 
