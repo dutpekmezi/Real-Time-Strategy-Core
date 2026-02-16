@@ -41,12 +41,14 @@ namespace Game.Systems
             Ray ray = worldCamera.ScreenPointToRay(Input.mousePosition);
             if (!Physics.Raycast(ray, out RaycastHit hit))
             {
+                ClearSelection();
                 return;
             }
 
             Renderer renderer = hit.collider.GetComponent<Renderer>();
             if (renderer == null)
             {
+                ClearSelection();
                 return;
             }
 
@@ -58,7 +60,11 @@ namespace Game.Systems
                 {
                     selectionDetailsCanvas?.ShowSelection(selectable);
                 }
+
+                return;
             }
+
+            ClearSelection();
         }
 
         private void SelectCity(List<Renderer> renderers)
@@ -136,6 +142,17 @@ namespace Game.Systems
                     }
                 }
             }
+        }
+
+        private void ClearSelection()
+        {
+            for (int i = 0; i < _activeOutlines.Count; i++)
+            {
+                _activeOutlines[i].SetActive(false);
+            }
+
+            _activeOutlines.Clear();
+            selectionDetailsCanvas?.ShowNoSelection();
         }
 
         private static ISelectable EnsureSelectable(GameObject target)
