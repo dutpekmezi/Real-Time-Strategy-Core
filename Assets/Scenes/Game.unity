@@ -167,10 +167,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   worldCamera: {fileID: 963194227}
-  cityRoot: {fileID: 0}
+  cityRoot: {fileID: 1817295903}
   whiteBorderMaterial: {fileID: 2100000, guid: 6bbbdd72db8b64343807298aa3ca320b, type: 2}
   outlineScale: 1
-  selectionDetailsCanvas: {fileID: 0}
+  selectionDetailsCanvas: {fileID: 1039880627}
 --- !u!1 &705507993
 GameObject:
   m_ObjectHideFlags: 0
@@ -377,6 +377,17 @@ MonoBehaviour:
   zoomSpeed: 10
   minZoom: 5
   maxZoom: 20
+--- !u!114 &1039880627 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5224856269956476673, guid: daf25cf9379197348bc49cabe87ad210, type: 3}
+  m_PrefabInstance: {fileID: 1355763689787848963}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6621e28c081f6a4695f7740e94dd92a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1312185238
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -434,6 +445,11 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 22f0a6ee50c400f49ad93e3f12661c7b, type: 3}
+--- !u!4 &1817295903 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 9213803206484046728, guid: 22f0a6ee50c400f49ad93e3f12661c7b, type: 3}
+  m_PrefabInstance: {fileID: 1312185238}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1355763689787848963
 PrefabInstance:
   m_ObjectHideFlags: 0

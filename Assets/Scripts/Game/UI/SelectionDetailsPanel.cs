@@ -6,6 +6,7 @@ public class SelectionDetailsPanel : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI detailsText;
+    [SerializeField] private TextMeshProUGUI terrainText;
     [SerializeField] private string emptyStateText = "Bir şehir seçin";
 
     private void Awake()
