@@ -1,12 +1,11 @@
 using Game.Simulation;
-using UnityEngine;
 
 namespace Game.Entity
 {
-    [CreateAssetMenu(fileName = "CityData", menuName = "Game/Entity/City Data")]
+    [System.Serializable]
     public class CityData : MapEntityData
     {
-        [SerializeField] private CityState cityState = new();
+        [UnityEngine.SerializeField] private CityState cityState = new();
 
         public CityState CityState => cityState;
 
