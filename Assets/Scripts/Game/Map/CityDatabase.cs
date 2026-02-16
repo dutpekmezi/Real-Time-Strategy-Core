@@ -172,7 +172,7 @@ namespace Game.Map
                 MiningMultiplier = UnityEngine.Random.Range(profile.MiningMin, profile.MiningMax)
             };
 
-            CityData data = ScriptableObject.CreateInstance<CityData>();
+            CityData data = new CityData();
             data.Id = string.IsNullOrWhiteSpace(record.Id) ? $"city-{cityIndex + 1}" : record.Id;
             data.Name = string.IsNullOrWhiteSpace(record.Name) ? $"City {cityIndex + 1}" : record.Name;
             data.Description = string.IsNullOrWhiteSpace(record.Description)
