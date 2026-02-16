@@ -9,9 +9,11 @@ namespace Game.Systems
         [SerializeField] private Transform cityRoot;
         [SerializeField] private Material whiteBorderMaterial;
         [SerializeField] private float outlineScale = 1.01f;
+        [SerializeField] private SelectionDetailsCanvas selectionDetailsCanvas;
 
         private readonly Dictionary<Renderer, GameObject> _outlineByRenderer = new();
         private readonly Dictionary<Renderer, List<Renderer>> _selectionGroupByHitRenderer = new();
+        private readonly Dictionary<Renderer, ISelectable> _selectableByHitRenderer = new();
         private readonly List<GameObject> _activeOutlines = new();
 
         protected virtual void Awake()
@@ -51,6 +53,11 @@ namespace Game.Systems
             if (_selectionGroupByHitRenderer.TryGetValue(renderer, out List<Renderer> selectionGroup))
             {
                 SelectCity(selectionGroup);
+
+                if (_selectableByHitRenderer.TryGetValue(renderer, out ISelectable selectable))
+                {
+                    selectionDetailsCanvas?.ShowSelection(selectable);
+                }
             }
         }
 
@@ -105,6 +112,9 @@ namespace Game.Systems
 
             foreach (List<Renderer> cityRenderers in rendererGroups.Values)
             {
+                Transform groupRoot = GetGroupRoot(cityRenderers[0].transform);
+                ISelectable selectable = EnsureSelectable(groupRoot.gameObject);
+
                 for (int i = 0; i < cityRenderers.Count; i++)
                 {
                     MeshFilter meshFilter = cityRenderers[i].GetComponent<MeshFilter>();
@@ -120,8 +130,24 @@ namespace Game.Systems
                 for (int i = 0; i < cityRenderers.Count; i++)
                 {
                     _selectionGroupByHitRenderer[cityRenderers[i]] = cityRenderers;
+                    if (selectable != null)
+                    {
+                        _selectableByHitRenderer[cityRenderers[i]] = selectable;
+                    }
                 }
             }
+        }
+
+        private static ISelectable EnsureSelectable(GameObject target)
+        {
+            ISelectable selectable = target.GetComponent(typeof(ISelectable)) as ISelectable;
+            if (selectable != null)
+            {
+                return selectable;
+            }
+
+            City city = target.AddComponent<City>();
+            return city;
         }
 
         private Transform GetGroupRoot(Transform current)
