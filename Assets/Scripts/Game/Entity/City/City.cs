@@ -1,4 +1,3 @@
-using System.Text;
 using Game.Entity;
 using Game.Simulation;
 using UnityEngine;
@@ -36,15 +35,12 @@ public class City : Entity
         miningMultiplier = generatedData.CityState.MiningMultiplier;
     }
 
-    public override string GetSelectionDetails()
+    public override SelectionData GetSelectionData()
     {
-        StringBuilder sb = new StringBuilder();
-        sb.AppendLine($"{DisplayName} (ID: {cityId})");
-        sb.AppendLine(DisplayDescription);
-        sb.AppendLine($"Terrain: {terrainType}");
-        sb.AppendLine($"Defence x{defenseMultiplier:0.00}");
-        sb.AppendLine($"Farming x{farmingMultiplier:0.00}");
-        sb.Append($"Mining x{miningMultiplier:0.00}");
-        return sb.ToString();
+        string title = $"{DisplayName} (ID: {cityId})";
+        string description =
+            $"{DisplayDescription}\nDefence x{defenseMultiplier:0.00}\nFarming x{farmingMultiplier:0.00}\nMining x{miningMultiplier:0.00}";
+
+        return new SelectionData(title, description, terrainType.ToString());
     }
 }

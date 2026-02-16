@@ -1,6 +1,5 @@
-using UnityEngine;
-using UnityEngine.UI;
 using TMPro;
+using UnityEngine;
 
 public class SelectionDetailsPanel : MonoBehaviour
 {
@@ -16,21 +15,45 @@ public class SelectionDetailsPanel : MonoBehaviour
 
     public void ShowSelection(ISelectable selectable)
     {
-        if (detailsText == null)
+        if (selectable == null)
         {
+            ShowNoSelection();
             return;
         }
 
-        detailsText.text = selectable != null ? selectable.GetSelectionDetails() : emptyStateText;
+        SelectionData selectionData = selectable.GetSelectionData();
+
+        if (titleText != null)
+        {
+            titleText.text = selectionData.Title;
+        }
+
+        if (detailsText != null)
+        {
+            detailsText.text = selectionData.Description;
+        }
+
+        if (terrainText != null)
+        {
+            terrainText.text = selectionData.Terrain;
+        }
     }
 
     public void ShowNoSelection()
     {
-        if (detailsText == null)
+        if (titleText != null)
         {
-            return;
+            titleText.text = emptyStateText;
         }
 
-        detailsText.text = emptyStateText;
+        if (detailsText != null)
+        {
+            detailsText.text = string.Empty;
+        }
+
+        if (terrainText != null)
+        {
+            terrainText.text = string.Empty;
+        }
     }
 }

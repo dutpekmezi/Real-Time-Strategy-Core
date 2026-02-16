@@ -1,6 +1,4 @@
 ﻿using Game.Entity;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Entity : MonoBehaviour, ISelectable
@@ -13,8 +11,8 @@ public class Entity : MonoBehaviour, ISelectable
         ? "No Descrpition."
         : entityData.Description;
 
-    public virtual string GetSelectionDetails()
+    public virtual SelectionData GetSelectionData()
     {
-        return $"{DisplayName}\n{DisplayDescription}";
+        return new SelectionData(DisplayName, DisplayDescription, "-");
     }
 }
