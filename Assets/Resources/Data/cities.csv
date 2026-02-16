@@ -1,16 +1,86 @@
 id,name,description
-1,Ankara,Anadolu'nun kalbinde stratejik başkent.
-2,Istanbul,Boğazı kontrol eden tarihî ve ticari merkez.
-3,Izmir,Ege kıyısında liman ve tarım dengesi güçlü şehir.
-4,Bursa,Verimli ovalar ve dağ etekleriyle üretim merkezi.
-5,Konya,Geniş düzlükleriyle yüksek tarım kapasitesi sunar.
-6,Samsun,Karadeniz bağlantısı sayesinde lojistikte kritik nokta.
-7,Trabzon,Dağlık yapısı savunmayı güçlendirir.
-8,Erzurum,Yüksek rakımda sert iklimli sınır şehri.
-9,Kayseri,Ticaret yollarına yakın zanaat ve üretim odağı.
-10,Adana,Nehir havzasında bereketli topraklarıyla öne çıkar.
-11,Antalya,Kıyı ticareti ve tarımın birleştiği sıcak bölge.
-12,Gaziantep,Zengin tarih ve sanayi potansiyeli taşıyan merkez.
-13,Malatya,Maden ve tarım kaynaklarını birlikte barındırır.
-14,Eskişehir,Ulaşım ağlarının kesişiminde gelişmiş bir şehir.
-15,Diyarbakir,Surlarla çevrili güçlü savunma geçmişine sahiptir.
+1,Reyvadin,Calradia'dan ilham alan stratejik yerlesim noktasi 1.
+2,Rivacheg,Calradia'dan ilham alan stratejik yerlesim noktasi 2.
+3,Khudan,Calradia'dan ilham alan stratejik yerlesim noktasi 3.
+4,Curaw,Calradia'dan ilham alan stratejik yerlesim noktasi 4.
+5,Wercheg,Calradia'dan ilham alan stratejik yerlesim noktasi 5.
+6,Sargoth,Calradia'dan ilham alan stratejik yerlesim noktasi 6.
+7,Tihr,Calradia'dan ilham alan stratejik yerlesim noktasi 7.
+8,Veluca,Calradia'dan ilham alan stratejik yerlesim noktasi 8.
+9,Suno,Calradia'dan ilham alan stratejik yerlesim noktasi 9.
+10,Praven,Calradia'dan ilham alan stratejik yerlesim noktasi 10.
+11,Uxkhal,Calradia'dan ilham alan stratejik yerlesim noktasi 11.
+12,Yalen,Calradia'dan ilham alan stratejik yerlesim noktasi 12.
+13,Jelkala,Calradia'dan ilham alan stratejik yerlesim noktasi 13.
+14,Dhirim,Calradia'dan ilham alan stratejik yerlesim noktasi 14.
+15,Ahmerrad,Calradia'dan ilham alan stratejik yerlesim noktasi 15.
+16,Bariyye,Calradia'dan ilham alan stratejik yerlesim noktasi 16.
+17,Shariz,Calradia'dan ilham alan stratejik yerlesim noktasi 17.
+18,Durquba,Calradia'dan ilham alan stratejik yerlesim noktasi 18.
+19,Halmar,Calradia'dan ilham alan stratejik yerlesim noktasi 19.
+20,Narra,Calradia'dan ilham alan stratejik yerlesim noktasi 20.
+21,Ichamur,Calradia'dan ilham alan stratejik yerlesim noktasi 21.
+22,Tulga,Calradia'dan ilham alan stratejik yerlesim noktasi 22.
+23,Almerra,Calradia'dan ilham alan stratejik yerlesim noktasi 23.
+24,Ambean,Calradia'dan ilham alan stratejik yerlesim noktasi 24.
+25,Asugan,Calradia'dan ilham alan stratejik yerlesim noktasi 25.
+26,Ayike,Calradia'dan ilham alan stratejik yerlesim noktasi 26.
+27,Azgad,Calradia'dan ilham alan stratejik yerlesim noktasi 27.
+28,Bulugha,Calradia'dan ilham alan stratejik yerlesim noktasi 28.
+29,Cez,Calradia'dan ilham alan stratejik yerlesim noktasi 29.
+30,Chalbek,Calradia'dan ilham alan stratejik yerlesim noktasi 30.
+31,Culmarr,Calradia'dan ilham alan stratejik yerlesim noktasi 31.
+32,Distar,Calradia'dan ilham alan stratejik yerlesim noktasi 32.
+33,Dramug,Calradia'dan ilham alan stratejik yerlesim noktasi 33.
+34,Durrin,Calradia'dan ilham alan stratejik yerlesim noktasi 34.
+35,Grunwalder,Calradia'dan ilham alan stratejik yerlesim noktasi 35.
+36,Haringoth,Calradia'dan ilham alan stratejik yerlesim noktasi 36.
+37,Ismirala,Calradia'dan ilham alan stratejik yerlesim noktasi 37.
+38,Jeirbe,Calradia'dan ilham alan stratejik yerlesim noktasi 38.
+39,Kelredan,Calradia'dan ilham alan stratejik yerlesim noktasi 39.
+40,Maras,Calradia'dan ilham alan stratejik yerlesim noktasi 40.
+41,Nelag,Calradia'dan ilham alan stratejik yerlesim noktasi 41.
+42,Reindi,Calradia'dan ilham alan stratejik yerlesim noktasi 42.
+43,Reland,Calradia'dan ilham alan stratejik yerlesim noktasi 43.
+44,Rindyar,Calradia'dan ilham alan stratejik yerlesim noktasi 44.
+45,Ryibelet,Calradia'dan ilham alan stratejik yerlesim noktasi 45.
+46,Senuzgda,Calradia'dan ilham alan stratejik yerlesim noktasi 46.
+47,Sungetche,Calradia'dan ilham alan stratejik yerlesim noktasi 47.
+48,Tehlrog,Calradia'dan ilham alan stratejik yerlesim noktasi 48.
+49,Tilbaut,Calradia'dan ilham alan stratejik yerlesim noktasi 49.
+50,Tismirr,Calradia'dan ilham alan stratejik yerlesim noktasi 50.
+51,Uhhun,Calradia'dan ilham alan stratejik yerlesim noktasi 51.
+52,Unuzdaq,Calradia'dan ilham alan stratejik yerlesim noktasi 52.
+53,Veidar,Calradia'dan ilham alan stratejik yerlesim noktasi 53.
+54,Vyincourd,Calradia'dan ilham alan stratejik yerlesim noktasi 54.
+55,Yruma,Calradia'dan ilham alan stratejik yerlesim noktasi 55.
+56,Yalibe,Calradia'dan ilham alan stratejik yerlesim noktasi 56.
+57,Jamiche,Calradia'dan ilham alan stratejik yerlesim noktasi 57.
+58,Amere,Calradia'dan ilham alan stratejik yerlesim noktasi 58.
+59,Bhulaban,Calradia'dan ilham alan stratejik yerlesim noktasi 59.
+60,Bazeck,Calradia'dan ilham alan stratejik yerlesim noktasi 60.
+61,Biyaza,Calradia'dan ilham alan stratejik yerlesim noktasi 61.
+62,Boyar,Calradia'dan ilham alan stratejik yerlesim noktasi 62.
+63,Burglen,Calradia'dan ilham alan stratejik yerlesim noktasi 63.
+64,Dashbigha,Calradia'dan ilham alan stratejik yerlesim noktasi 64.
+65,Dugan,Calradia'dan ilham alan stratejik yerlesim noktasi 65.
+66,Emirin,Calradia'dan ilham alan stratejik yerlesim noktasi 66.
+67,Fenada,Calradia'dan ilham alan stratejik yerlesim noktasi 67.
+68,Fishara,Calradia'dan ilham alan stratejik yerlesim noktasi 68.
+69,Gisim,Calradia'dan ilham alan stratejik yerlesim noktasi 69.
+70,Jelbegi,Calradia'dan ilham alan stratejik yerlesim noktasi 70.
+71,Karindi,Calradia'dan ilham alan stratejik yerlesim noktasi 71.
+72,Kulum,Calradia'dan ilham alan stratejik yerlesim noktasi 72.
+73,Mazigh,Calradia'dan ilham alan stratejik yerlesim noktasi 73.
+74,Mehad,Calradia'dan ilham alan stratejik yerlesim noktasi 74.
+75,Nemeja,Calradia'dan ilham alan stratejik yerlesim noktasi 75.
+76,OcsHall,Calradia'dan ilham alan stratejik yerlesim noktasi 76.
+77,Paviksholm,Calradia'dan ilham alan stratejik yerlesim noktasi 77.
+78,Ruluns,Calradia'dan ilham alan stratejik yerlesim noktasi 78.
+79,Slezkh,Calradia'dan ilham alan stratejik yerlesim noktasi 79.
+80,Tosdhar,Calradia'dan ilham alan stratejik yerlesim noktasi 80.
+81,Uslum,Calradia'dan ilham alan stratejik yerlesim noktasi 81.
+82,Vezin,Calradia'dan ilham alan stratejik yerlesim noktasi 82.
+83,Yafah,Calradia'dan ilham alan stratejik yerlesim noktasi 83.
+84,Zendar,Calradia'dan ilham alan stratejik yerlesim noktasi 84.
+85,Calradia Nova,Calradia'dan ilham alan stratejik yerlesim noktasi 85.
