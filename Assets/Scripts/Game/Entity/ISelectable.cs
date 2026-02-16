@@ -1,17 +1,17 @@
 public readonly struct SelectionData
 {
-    public SelectionData(string title, string description, string terrain)
+    public SelectionData(string title, string description, string type)
     {
         Title = title;
         Description = description;
-        Terrain = terrain;
+        Type = type;
     }
 
     public string Title { get; }
 
     public string Description { get; }
 
-    public string Terrain { get; }
+    public string Type { get; }
 }
 
 public interface ISelectable

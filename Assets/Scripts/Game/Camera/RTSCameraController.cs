@@ -1,10 +1,10 @@
 using UnityEngine;
 
-namespace Assets.Scripts.Camera
+namespace Game
 {
     public class RTSCameraController : MonoBehaviour
     {
-        [SerializeField] private UnityEngine.Camera camera;
+        [SerializeField] private Camera camera;
 
         [Header("Pan")]
         [SerializeField] private float panSpeed = 12f;

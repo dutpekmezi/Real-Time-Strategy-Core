@@ -325,9 +325,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b6621e28c081f6a4695f7740e94dd92a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  titleText: {fileID: 0}
+  titleText: {fileID: 171049124556076601}
   detailsText: {fileID: 7323419494293183099}
-  terrainText: {fileID: 0}
+  terrainText: {fileID: 1236001271729608359}
   emptyStateText: Select an object
 --- !u!1 &3517876237147268499
 GameObject:

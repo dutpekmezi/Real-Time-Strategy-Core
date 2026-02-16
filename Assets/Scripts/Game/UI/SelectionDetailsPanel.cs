@@ -5,7 +5,7 @@ public class SelectionDetailsPanel : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI titleText;
     [SerializeField] private TextMeshProUGUI detailsText;
-    [SerializeField] private TextMeshProUGUI terrainText;
+    [SerializeField] private TextMeshProUGUI typeText;
     [SerializeField] private string emptyStateText = "Bir şehir seçin";
 
     private void Awake()
@@ -33,9 +33,9 @@ public class SelectionDetailsPanel : MonoBehaviour
             detailsText.text = selectionData.Description;
         }
 
-        if (terrainText != null)
+        if (typeText != null)
         {
-            terrainText.text = selectionData.Terrain;
+            typeText.text = selectionData.Type;
         }
     }
 
@@ -51,9 +51,9 @@ public class SelectionDetailsPanel : MonoBehaviour
             detailsText.text = string.Empty;
         }
 
-        if (terrainText != null)
+        if (typeText != null)
         {
-            terrainText.text = string.Empty;
+            typeText.text = string.Empty;
         }
     }
 }
