@@ -13,8 +13,8 @@ public class Entity : MonoBehaviour, ISelectable
         ? "No Descrpition."
         : entityData.Description;
 
-    public string GetSelectionDetails()
+    public virtual string GetSelectionDetails()
     {
-        throw new System.NotImplementedException();
+        return $"{DisplayName}\n{DisplayDescription}";
     }
 }

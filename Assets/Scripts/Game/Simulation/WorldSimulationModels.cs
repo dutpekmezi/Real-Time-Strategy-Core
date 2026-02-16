@@ -86,6 +86,9 @@ namespace Game.Simulation
         public MapEntityData CityData;
         public string OwnerPlayerId;
         public TerrainType Terrain;
+        public float DefenseMultiplier = 1f;
+        public float FarmingMultiplier = 1f;
+        public float MiningMultiplier = 1f;
 
         public int Population = 1000;
         public float PublicOrder = 100f;
